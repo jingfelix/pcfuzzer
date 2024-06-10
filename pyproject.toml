@@ -1,0 +1,19 @@
+[project]
+name = "pcfuzzer"
+version = "0.0.1"
+description = "Default template for PDM package"
+authors = [
+    {name = "jingfelix", email = "jingfelix@outlook.com"},
+]
+dependencies = [
+    "pysource-codegen>=0.5.2",
+    "typer[all]>=0.12.3",
+    "pysource-minimize>=0.6.3",
+]
+requires-python = ">=3.10"
+readme = "README.md"
+license = {text = "MIT"}
+
+
+[tool.pdm]
+distribution = false
