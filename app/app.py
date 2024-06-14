@@ -24,9 +24,11 @@ if not TARGET_VERSION:
 @app.command()
 def run(
     module: str,
+    command: str = typer.Option("", help="Command to pass to the module"),
+    option: str = typer.Option("", help="Option to pass to the module"),
 ):
     """Test python module"""
-    logger.info(f"Testing module {module}")
+    logger.info(f"Testing module {module} with command {command} and option {option}")
 
     # 检查 result 输出目录是否存在
     if not os.path.exists("../result"):
@@ -55,7 +57,8 @@ def run(
 
             logger.debug(f"Running with seed {seed}")
             res = subprocess.run(
-                ["python", "-m", module, str(tmp.name)], capture_output=True
+                ["python", "-m", module, command, str(tmp.name), option],
+                capture_output=True,
             )
 
             if res.returncode != 0:
