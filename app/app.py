@@ -24,18 +24,18 @@ if not TARGET_VERSION:
 @app.command()
 def run(
     module: str,
-    command: str = typer.Option("", help="Command to pass to the module"),
-    option: str = typer.Option("", help="Option to pass to the module"),
+    command: str = typer.Option(None, help="Command to pass to the module"),
+    option: str = typer.Option(None, help="Option to pass to the module"),
 ):
     """Test python module"""
     logger.info(f"Testing module {module} with command {command} and option {option}")
 
-    # 检查 result 输出目录是否存在
+    # Check whether result directory exists
     if not os.path.exists("../result"):
         logger.error("Result directory not found")
         raise typer.Exit(code=1)
 
-    # 检查 module 是否在 path 中
+    # Check whether module exists in path
     try:
         res = subprocess.run(
             ["which", module],
@@ -55,11 +55,15 @@ def run(
             tmp.write(bytes(code, "utf-8"))
             tmp.flush()
 
-            logger.debug(f"Running with seed {seed}")
-            res = subprocess.run(
-                ["python", "-m", module, command, str(tmp.name), option],
-                capture_output=True,
-            )
+            cmd = ["python", "-m", module]
+            if command:
+                cmd.append(command)
+            cmd.append(str(tmp.name))
+            if option:
+                cmd.append(option)
+
+            logger.debug(f"seed: {seed}; cmd: {' '.join(cmd)}")
+            res = subprocess.run(cmd, capture_output=True)
 
             if res.returncode != 0:
                 logger.error(f"Error running module {module}")
